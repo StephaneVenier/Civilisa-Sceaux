@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz Général — Civilisa'Sceaux</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="row">
+      <div class="brand"><div class="logo"><div>🏛️</div></div> Civilisa'Sceaux</div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <a href="index.html">Accueil</a>
+        <a href="catalogue.html" class="active">Catalogue</a>
+      </div>
+    </div>
+  </nav>
+  <div class="wrap">
+    <div class="card banner" style="--themeGrad:linear-gradient(90deg,#f6c453,#7c4dff)">
+      <div class="banner-inner"><div class="big" id="banner-emoji">🧭</div><div>
+        <h1 id="banner-title" style="margin:0">Quiz Général</h1>
+        <p class="muted" style="margin:6px 0 0">Entre ton pseudo, lance le quiz, puis compare ton score au classement local.</p>
+      </div></div>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card" id="screen-setup">
+        <h2 style="margin-top:0">Préparer le quiz</h2>
+        <label for="pseudo">Ton pseudo</label>
+        <input id="pseudo" type="text" placeholder="Ex : Sphinx92" autocomplete="nickname">
+        <div class="footer-note">Scores enregistrés localement pour ce quiz.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+          <button id="btnStart" class="btn primary">Commencer →</button>
+          <label class="btn" for="fileCSV">Importer CSV des questions</label>
+          <input id="fileCSV" type="file" accept=".csv" style="display:none">
+          <a class="btn" href="questions-template.csv" download>Télécharger modèle CSV</a>
+        </div>
+        <div id="adminBlock" class="hidden" style="margin-top:10px">
+          <button id="btnAdmin" class="btn">Admin</button>
+          <span class="muted">Réservé à <strong>Stephane</strong></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-top:0">Classement local</h2>
+        <div id="leaderboard" class="grid" style="gap:8px"></div>
+        <div id="adminTools" class="hidden" style="margin-top:12px">
+          <hr style="border-color:rgba(255,255,255,.08)">
+          <h3>Outils admin</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button id="btnResetMe" class="btn bad">Réinitialiser mon score</button>
+            <button id="btnResetAll" class="btn bad">Réinitialiser scores (ce quiz)</button>
+          </div>
+          <p class="footer-note">Protégé par un code PIN.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-quiz" class="card hidden">
+      <div class="progress" aria-label="Progression"><div id="progress"></div></div>
+      <h3 id="qPos" style="margin:10px 0 6px">Question…</h3>
+      <p id="qText" class="muted" style="margin:0 0 8px">…</p>
+      <div id="answers" class="answers"></div>
+      <div id="feedback" style="font-weight:700"></div>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button id="btnNext" class="btn" disabled>Question suivante →</button>
+        <a class="btn" id="btnCatalogue">Catalogue</a>
+        <a class="btn" id="btnHome">Accueil</a>
+      </div>
+    </div>
+
+    <div id="screen-end" class="card hidden">
+      <h2 style="margin-top:0">Résultat</h2>
+      <p id="endLine" class="muted">Bravo !</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <a class="btn primary" href="catalogue.html">Choisir un autre quiz</a>
+        <a class="btn" href="index.html">Retour à l’accueil</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="quiz.js"></script>
+  <script>
+    window.QUIZ_META = { slug: "general", title: "Quiz Général", theme: "linear-gradient(90deg,#f6c453,#7c4dff)", icon: "🧭" };
+    window.QUIZ_ITEMS = [{"q": "À quoi servaient les pyramides de Gizeh ?", "choices": ["Tombeaux de pharaons", "Observatoires", "Entrepôts de blé"], "correct": 0}, {"q": "Dans quelle ville se trouve le Parthénon ?", "choices": ["Athènes", "Sparte", "Olympie"], "correct": 0}, {"q": "Pourquoi les Romains faisaient des routes ?", "choices": ["Déplacer armées et commerce", "Décorer", "Empêcher invasions"], "correct": 0}];
+    setupQuizPage(window.QUIZ_META);
+  </script>
+</body>
+</html>
