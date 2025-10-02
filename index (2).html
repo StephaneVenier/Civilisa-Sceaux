@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Civilisa'Sceaux — Quiz des civilisations</title>
+  <meta name="description" content="Civilisa'Sceaux : un quiz amusant pour découvrir 20 civilisations, 20 questions, score sur 20.">
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#101822;
+      --ink:#ecf1f6;
+      --muted:#aab6c7;
+      --accent:#f6c453;
+      --good:#4ade80;
+      --bad:#ef4444;
+      --focus:#60a5fa;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      background: radial-gradient(1200px 600px at 70% -10%, rgba(246,196,83,.18), transparent),
+                  linear-gradient(180deg,#0b0f14,#121723 50%, #0b0f14);
+      color:var(--ink);
+      line-height:1.5;
+    }
+    .wrap{max-width:960px;margin:0 auto;padding:24px}
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 0 8px;
+    }
+    .brand{font-weight:800;letter-spacing:.2px;font-size:20px;display:flex;align-items:center;gap:10px}
+    .brand .logo{
+      width:40px;height:40px;border-radius:12px;
+      background: conic-gradient(from 90deg,#f6c453,#1f2b44,#7c4dff,#f6c453);
+      padding:2px;
+    }
+    .brand .logo > div{
+      width:100%;height:100%;border-radius:10px;background:#0b0f14;
+      display:flex;align-items:center;justify-content:center;font-size:20px;
+    }
+    .card{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+    .grid{display:grid;gap:16px}
+    .cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media (max-width:800px){.cols-2{grid-template-columns:1fr}}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:10px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+      color:var(--ink);text-decoration:none;font-weight:600;cursor:pointer;
+      box-shadow:0 6px 16px rgba(0,0,0,.25);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn.primary{border-color:rgba(246,196,83,.5);background:linear-gradient(180deg,rgba(246,196,83,.2),rgba(246,196,83,.06))}
+    .btn.good{border-color:rgba(74,222,128,.4);background:linear-gradient(180deg,rgba(74,222,128,.18),rgba(74,222,128,.04))}
+    .btn.bad{border-color:rgba(239,68,68,.4);background:linear-gradient(180deg,rgba(239,68,68,.18),rgba(239,68,68,.04))}
+    input[type="text"]{
+      width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
+      background:#0f1520;color:var(--ink);font-size:16px;outline:none;
+    }
+    input[type="text"]:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(96,165,250,.25)}
+    .muted{color:var(--muted);font-size:14px}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.04);font-size:13px
+    }
+    .progress{height:10px;background:#0e1320;border:1px solid rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
+    .progress > div{height:100%;background:linear-gradient(90deg,#f6c453,#7c4dff);width:0%}
+    .answers{display:grid;gap:10px;margin:12px 0}
+    .answer{
+      padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);cursor:pointer;
+      background:#0e1522;
+    }
+    .answer[disabled]{opacity:.7;cursor:not-allowed}
+    .answer.correct{border-color:rgba(74,222,128,.6);background:rgba(74,222,128,.12)}
+    .answer.wrong{border-color:rgba(239,68,68,.6);background:rgba(239,68,68,.10)}
+    .feedback{margin-top:8px;font-weight:700}
+    .civ-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);font-size:13px}
+    .footer-note{margin-top:14px;color:var(--muted);font-size:13px}
+    /* Theming by civilization (background ribbons) */
+    .themed{
+      position:relative;overflow:hidden;
+    }
+    .themed::before{
+      content:"";position:absolute;inset:-40px -60px auto auto;height:220px;width:480px;
+      transform:rotate(25deg);
+      filter:blur(8px);opacity:.25;pointer-events:none;
+      background:var(--themeGrad,linear-gradient(90deg,#7c4dff,#f6c453));
+      border-radius:32px;
+    }
+    .hidden{display:none !important}
+
+    .civ-banner{
+      margin:6px 0 10px;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.1);
+      overflow:hidden;
+      background: var(--themeGrad,linear-gradient(90deg,#7c4dff,#f6c453));
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .civ-banner-inner{position:relative;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;min-height:100px}
+    .civ-banner-left{display:flex;align-items:center;gap:14px}
+    .civ-bigicon{font-size:48px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+    .civ-banner-label{font-size:12px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.12em}
+    .civ-banner-name{font-size:22px;font-weight:800}
+    .civ-banner-art{
+      position:absolute;inset:0;
+      background:
+        radial-gradient(400px 160px at 100% 0%, rgba(255,255,255,.14), transparent 60%),
+        conic-gradient(from 90deg at 120% -10%, rgba(255,255,255,.15), transparent 40%);
+      mix-blend-mode: screen; opacity:.35; pointer-events:none;
+    }
+    @media (max-width:720px){
+      .civ-bigicon{font-size:40px}
+      .civ-banner-name{font-size:18px}
+    }
+  </style>
+
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo"><div>🏛️</div></div>
+        Civilisa'Sceaux <span class="muted">— Quiz des civilisations</span>
+      </div>
+      <div id="headerRight" class="pill">Score : <strong id="headerScore">0</strong>/20</div>
+    </header>
+
+    <!-- Landing / Start -->
+    <section id="screen-start" class="card themed" style="--themeGrad:linear-gradient(90deg,#f6c453,#1f2b44);">
+      <h1 style="margin-top:0">Bienvenue dans le quiz des civilisations !</h1>
+      <p class="muted" style="margin-top:-6px">
+        20 questions • 20 civilisations • 1 point par bonne réponse. Découvre le monde à travers l’art, les villes,
+        les héros et les dieux… et tente le <strong>20/20</strong> !
+      </p>
+      <div class="grid cols-2" style="margin-top:10px">
+        <div class="card" style="background:#0c1422">
+          <label for="pseudo">Ton pseudo</label>
+          <input id="pseudo" type="text" placeholder="Ex : Sphinx92" autocomplete="nickname">
+          <p class="footer-note">Ton score sera enregistré sur cet appareil.</p>
+        </div>
+        <div class="card" style="background:#0c1422">
+          <p style="margin:0 0 10px">Quand tu es prêt·e :</p>
+          <button id="btnStart" class="btn primary">Commencer le quiz →</button>
+          <div id="adminBlock" class="hidden" style="margin-top:12px">
+            <button id="btnAdmin" class="btn">Admin</button>
+            <span class="muted">Réservé à <strong>Stephane</strong></span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px" class="muted">
+        Astuce : tu peux revenir plus tard, ton avancée est mémorisée automatiquement.
+      </div>
+    </section>
+
+    <!-- Quiz -->
+    <section id="screen-quiz" class="card themed hidden">
+      <div class="grid" style="gap:10px">
+        <div class="pill">
+          <span id="civIcon">🏺</span>
+          <strong id="civName">Civilisation</strong>
+          <span class="muted" id="qPos">Question 1/20</span>
+        </div>
+      <div id="civBanner" class="civ-banner">
+        <div class="civ-banner-inner">
+          <div class="civ-banner-left">
+            <div id="civBigIcon" class="civ-bigicon">🏺</div>
+            <div class="civ-banner-text">
+              <div class="civ-banner-label">Civilisation</div>
+              <div id="civBannerName" class="civ-banner-name">Titre</div>
+            </div>
+          </div>
+          <div class="civ-banner-art" aria-hidden="true"></div>
+        </div>
+      </div>
+    
+        <div class="progress" aria-label="Progression"><div id="progressBar"></div></div>
+      </div>
+      <h2 id="qTitle" style="margin:12px 0 6px">Question…</h2>
+      <p id="qText" class="muted" style="margin:0 0 8px">…</p>
+      <div class="answers" id="answers"></div>
+      <div id="feedback" class="feedback"></div>
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <button id="btnNext" class="btn" disabled>Question suivante →</button>
+        <button id="btnQuit" class="btn">Quitter</button>
+      </div>
+    </section>
+
+    <!-- End -->
+    <section id="screen-end" class="card themed hidden" style="--themeGrad:linear-gradient(90deg,#4ade80,#7c4dff)">
+      <h2 style="margin-top:0">Résultat</h2>
+      <p id="endLine" class="muted">Bravo !</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <button id="btnReplay" class="btn primary">Rejouer</button>
+        <button id="btnShare" class="btn">Partager mon score</button>
+      </div>
+      <div id="adminTools" class="hidden" style="margin-top:12px">
+        <hr style="border-color:rgba(255,255,255,.08)">
+        <h3>Outils admin</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button id="btnResetMe" class="btn bad">Réinitialiser mon score</button>
+          <button id="btnResetAll" class="btn bad">Réinitialiser TOUTES les données</button>
+        </div>
+        <p class="muted">Protégé par un code PIN (modifiable dans le code).</p>
+      </div>
+      <p class="footer-note">Civilisa'Sceaux — réalisé pour des enfants de 6–9 ans (centre de loisirs).</p>
+    </section>
+  </div>
+
+  
+  <script>
+    // --- Configuration ---
+    const ADMIN_NAME = "Stephane";
+    const ADMIN_PIN  = "Sceaux2025"; // ← à changer si besoin
+    const STORAGE_KEY = "civilisasceaux_progress_v1";
+
+    // Données des 20 questions (1 par civilisation)
+    // Chaque entrée : { civ, icon, themeGrad, title, question, choices:[{t,correct}], goodMsg, badMsg }
+    const QUIZ = [
+      {civ:"Égypte antique",icon:"🦂",themeGrad:"linear-gradient(90deg,#f6c453,#b0892e)",
+       title:"Égypte — Les pyramides", question:"À quoi servaient principalement les grandes pyramides de Gizeh ?",
+       choices:[
+         {t:"Des tombeaux pour les pharaons",correct:true},
+         {t:"Des observatoires pour regarder les étoiles",correct:false},
+         {t:"Des entrepôts de blé",correct:false}
+       ], good:"Bravo ! Les pyramides servaient de tombeaux monumentaux.", bad:"Non, ce n'est pas ça. Ce sont des tombeaux pour pharaons."},
+
+      {civ:"Grèce antique",icon:"🦉",themeGrad:"linear-gradient(90deg,#8fb3ff,#4e6ad6)",
+       title:"Grèce — Le Parthénon", question:"Dans quelle ville se trouve le Parthénon ?",
+       choices:[
+         {t:"Athènes",correct:true},{t:"Sparte",correct:false},{t:"Olympie",correct:false}
+       ], good:"Bravo ! Le Parthénon domine l'Acropole d'Athènes.", bad:"Non. C'est à Athènes."},
+
+      {civ:"Empire romain",icon:"🛡️",themeGrad:"linear-gradient(90deg,#ff9f7a,#ff5d5d)",
+       title:"Rome — Les routes", question:"Pourquoi les Romains construisaient-ils tant de routes ?",
+       choices:[
+         {t:"Pour déplacer armées et marchandises rapidement",correct:true},
+         {t:"Pour décorer les campagnes",correct:false},
+         {t:"Pour empêcher les invasions",correct:false}
+       ], good:"Bravo ! Un réseau routier pour l'armée et le commerce.", bad:"Non. Le but était de se déplacer vite (armées, commerce)."},
+
+      {civ:"Mésopotamie",icon:"🌾",themeGrad:"linear-gradient(90deg,#a3d977,#5dbb63)",
+       title:"Mésopotamie — Écriture", question:"Quelle écriture est née en Mésopotamie ?",
+       choices:[
+         {t:"L'écriture cunéiforme",correct:true},{t:"Les hiéroglyphes",correct:false},{t:"L'alphabet latin",correct:false}
+       ], good:"Bravo ! Le cunéiforme, gravé sur des tablettes d’argile.", bad:"Non. C'est l'écriture cunéiforme."},
+
+      {civ:"Mayas",icon:"🐍",themeGrad:"linear-gradient(90deg,#66e0c2,#1fbf9c)",
+       title:"Mayas — Astronomie", question:"À quoi servaient beaucoup de pyramides mayas ?",
+       choices:[
+         {t:"À observer les astres et célébrer les dieux",correct:true},
+         {t:"À stocker des poissons",correct:false},
+         {t:"À faire du ski",correct:false}
+       ], good:"Bravo ! Elles servaient aux rituels et à l’astronomie.", bad:"Non. Elles étaient liées aux dieux et à l’astronomie."},
+
+      {civ:"Aztèques",icon:"🗡️",themeGrad:"linear-gradient(90deg,#a17bf3,#6b3bf1)",
+       title:"Aztèques — Capitale", question:"Quelle était la capitale aztèque bâtie sur un lac ?",
+       choices:[
+         {t:"Tenochtitlan",correct:true},{t:"Teotihuacan",correct:false},{t:"Cuzco",correct:false}
+       ], good:"Bravo ! Tenochtitlan, sur le lac Texcoco.", bad:"Non. C'était Tenochtitlan."},
+
+      {civ:"Incas",icon:"🦙",themeGrad:"linear-gradient(90deg,#ffd86b,#f7a325)",
+       title:"Incas — Routes", question:"Quel animal aidait souvent au transport en montagne ?",
+       choices:[
+         {t:"Le lama",correct:true},{t:"Le chameau",correct:false},{t:"Le renne",correct:false}
+       ], good:"Bravo ! Les lamas aident dans les Andes.", bad:"Non. C'est le lama."},
+
+      {civ:"Chine ancienne",icon:"🐉",themeGrad:"linear-gradient(90deg,#88c3ff,#2f8cf8)",
+       title:"Chine — Muraille", question:"La Grande Muraille servait surtout à :",
+       choices:[
+         {t:"Protéger le pays des invasions",correct:true},{t:"Canaliser un fleuve",correct:false},{t:"Cuisiner du riz",correct:false}
+       ], good:"Bravo ! Une défense contre les invasions.", bad:"Non. Elle servait à protéger le pays."},
+
+      {civ:"Japon féodal",icon:"⛩️",themeGrad:"linear-gradient(90deg,#ff9bd3,#ff4db8)",
+       title:"Japon — Samouraïs", question:"Qui étaient les samouraïs ?",
+       choices:[
+         {t:"Des guerriers au service de seigneurs",correct:true},{t:"Des marchands",correct:false},{t:"Des moines agriculteurs",correct:false}
+       ], good:"Bravo ! Des guerriers liés aux daimyō.", bad:"Non. Ce sont des guerriers."},
+
+      {civ:"Inde ancienne",icon:"🪔",themeGrad:"linear-gradient(90deg,#ffd4a1,#ffaf38)",
+       title:"Inde — Gange", question:"Le Gange est :",
+       choices:[
+         {t:"Un fleuve sacré",correct:true},{t:"Une montagne",correct:false},{t:"Un désert",correct:false}
+       ], good:"Bravo ! Le Gange est un fleuve sacré.", bad:"Non. C'est un fleuve sacré."},
+
+      {civ:"Empire perse",icon:"🦬",themeGrad:"linear-gradient(90deg,#9ad1ff,#4987c7)",
+       title:"Perses — Relais", question:"Quel système aidait les messagers perses ?",
+       choices:[
+         {t:"La route royale avec relais",correct:true},{t:"Des pigeons robots",correct:false},{t:"Des sous-marins",correct:false}
+       ], good:"Bravo ! Route royale et relais rapides.", bad:"Non. C'était la route royale."},
+
+      {civ:"Vikings (Norse)",icon:"🛶",themeGrad:"linear-gradient(90deg,#c4d0e3,#71839b)",
+       title:"Vikings — Drakkars", question:"Les drakkars étaient :",
+       choices:[
+         {t:"Des bateaux rapides et maniables",correct:true},{t:"Des châteaux",correct:false},{t:"Des dirigeables",correct:false}
+       ], good:"Bravo ! Des navires parfaits pour explorer.", bad:"Non. Ce sont des bateaux rapides."},
+
+      {civ:"Celtes",icon:"🍀",themeGrad:"linear-gradient(90deg,#8be28f,#2abf5a)",
+       title:"Celtes — Art", question:"Quel métal les Celtes travaillaient beaucoup ?",
+       choices:[
+         {t:"Le fer",correct:true},{t:"L'aluminium",correct:false},{t:"Le mercure",correct:false}
+       ], good:"Bravo ! Le fer pour armes et outils.", bad:"Non. C'est le fer."},
+
+      {civ:"Empire byzantin",icon:"🕊️",themeGrad:"linear-gradient(90deg,#b89cff,#6d56e6)",
+       title:"Byzance — Capitale", question:"Quel ancien nom d’Istanbul fut la capitale byzantine ?",
+       choices:[
+         {t:"Constantinople",correct:true},{t:"Alexandrie",correct:false},{t:"Antioche",correct:false}
+       ], good:"Bravo ! Constantinople.", bad:"Non. C'est Constantinople."},
+
+      {civ:"Empire ottoman",icon:"🌙",themeGrad:"linear-gradient(90deg,#ffd17e,#ff944d)",
+       title:"Ottomans — Janissaires", question:"Qui étaient les janissaires ?",
+       choices:[
+         {t:"Une élite de soldats",correct:true},{t:"Des boulangers royaux",correct:false},{t:"Des astronomes",correct:false}
+       ], good:"Bravo ! Corps d'élite.", bad:"Non. Des soldats d'élite."},
+
+      {civ:"Empire du Mali",icon:"🪙",themeGrad:"linear-gradient(90deg,#ffe478,#d8a431)",
+       title:"Mali — Richesse", question:"Quel produit fit la richesse de l'empire du Mali ?",
+       choices:[
+         {t:"L'or",correct:true},{t:"La glace",correct:false},{t:"Le pétrole",correct:false}
+       ], good:"Bravo ! L'or (et le commerce transsaharien).", bad:"Non. C'est l'or."},
+
+      {civ:"Renaissance française",icon:"🎨",themeGrad:"linear-gradient(90deg,#ffd2a8,#ff8e3c)",
+       title:"Renaissance — Château", question:"Quel roi lança la construction du château de Chambord ?",
+       choices:[
+         {t:"François Ier",correct:true},{t:"Henri IV",correct:false},{t:"Louis XIV",correct:false}
+       ], good:"Bravo ! François Ier est un grand roi de la Renaissance française.", bad:"Non. C'était François Ier."},
+{t:"Ramsès II",correct:false},{t:"Moctezuma II",correct:false}
+       ], good:"Bravo ! Le roi Salomon est un symbole de sagesse.", bad:"Non. C'était le roi Salomon."},
+
+      {civ:"Phéniciens",icon:"⛵",themeGrad:"linear-gradient(90deg,#9fe6ff,#35b6d7)",
+       title:"Phéniciens — Spécialité", question:"Les Phéniciens étaient célèbres pour :",
+       choices:[
+         {t:"Le commerce maritime et l'alphabet",correct:true},{t:"Le ski",correct:false},{t:"Les pyramides",correct:false}
+       ], good:"Bravo ! Grands navigateurs et alphabet.", bad:"Non. Commerce maritime et alphabet."},
+
+      {civ:"Khmer (Angkor)",icon:"🛕",themeGrad:"linear-gradient(90deg,#ffa9a1,#ff6b5d)",
+       title:"Khmer — Temple", question:"Comment s'appelle le grand temple d'Angkor ?",
+       choices:[
+         {t:"Angkor Wat",correct:true},{t:"Borobudur",correct:false},{t:"Tikal",correct:false}
+       ], good:"Bravo ! Angkor Wat.", bad:"Non. C'est Angkor Wat."},
+
+      {civ:"Gaule (Gaulois)",icon:"🦊",themeGrad:"linear-gradient(90deg,#8bd2ff,#2f9ee5)",
+       title:"Gaule — Chef célèbre", question:"Quel chef gaulois a résisté à Jules César ?",
+       choices:[
+         {t:"Vercingétorix",correct:true},{t:"Charlemagne",correct:false},{t:"Napoléon",correct:false}
+       ], good:"Bravo ! Vercingétorix mena la résistance contre César.", bad:"Non. C'était Vercingétorix."}
+    ];
+
+    // --- State ---
+    let state = {
+      pseudo: "",
+      index: 0,
+      score: 0,
+      answered: false,
+      adminUnlocked: false
+    };
+
+    // --- Storage helpers ---
+    function save(){
+      const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      all[state.pseudo] = { index: state.index, score: state.score, t: Date.now() };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+      renderHeader();
+      renderLeaderboard();
+    }
+    function load(pseudo){
+      const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      return all[pseudo] || null;
+    }
+    function getAll(){
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    }
+
+    // --- UI helpers ---
+    const qs = sel => document.querySelector(sel);
+    const elStart = qs("#screen-start");
+    const elQuiz = qs("#screen-quiz");
+    const elEnd = qs("#screen-end");
+    const elPseudo = qs("#pseudo");
+    const elBtnStart = qs("#btnStart");
+    const elBtnNext = qs("#btnNext");
+    const elBtnQuit = qs("#btnQuit");
+    const elHeaderScore = qs("#headerScore");
+    const elQPos = qs("#qPos");
+    const elQTitle = qs("#qTitle");
+    const elQText = qs("#qText");
+    const elAnswers = qs("#answers");
+    const elFeedback = qs("#feedback");
+    const elProgress = qs("#progressBar");
+    const elCivName = qs("#civName");
+    const elCivIcon = qs("#civIcon");
+    const elCivBanner = qs("#civBanner");
+    const elCivBigIcon = qs("#civBigIcon");
+    const elCivBannerName = qs("#civBannerName");
+const elAdminBlock = qs("#adminBlock");
+    const elBtnAdmin = qs("#btnAdmin");
+    const elAdminTools = qs("#adminTools");
+    const elEndLine = qs("#endLine");
+    const elBtnReplay = qs("#btnReplay");
+    const elBtnShare = qs("#btnShare");
+    const elBtnResetMe = qs("#btnResetMe");
+    const elBtnResetAll = qs("#btnResetAll");
+    const elLeaderboard = qs("#leaderboard");
+
+    function show(id){
+      [elStart, elQuiz, elEnd].forEach(s=>s.classList.add("hidden"));
+      id.classList.remove("hidden");
+    }
+    function renderHeader(){
+      elHeaderScore.textContent = state.score;
+    }
+    function updateAdminVisibility(){
+      if((elPseudo.value || state.pseudo) === ADMIN_NAME){
+        elAdminBlock.classList.remove("hidden");
+      } else {
+        elAdminBlock.classList.add("hidden");
+      }
+      if(state.pseudo === ADMIN_NAME && state.adminUnlocked){
+        elAdminTools.classList.remove("hidden");
+      } else {
+        elAdminTools.classList.add("hidden");
+      }
+    }
+    function start(){
+      const name = (elPseudo.value||"").trim();
+      if(!name){ elPseudo.focus(); return; }
+      state.pseudo = name;
+      const saved = load(name);
+      if(saved){
+        state.index = saved.index;
+        state.score = saved.score;
+      }else{
+        state.index = 0; state.score = 0;
+      }
+      renderHeader();
+      updateAdminVisibility();
+      showQuestion();
+      show(elQuiz);
+      save();
+    }
+    function quit(){
+      show(elStart);
+      updateAdminVisibility();
+      renderLeaderboard();
+    }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]].swap = [a[j],a[i]]; // keep for clarity
+      }
+      return a;
+    }
+    function showQuestion(){
+      const q = QUIZ[state.index];
+      // theme
+      elQuiz.style.setProperty("--themeGrad", q.themeGrad);
+      elCivBanner.style.setProperty("--themeGrad", q.themeGrad);
+      qs("#screen-quiz").classList.add("themed");
+      // content
+      elCivIcon.textContent = q.icon;
+      elCivName.textContent = q.civ;
+      elCivBigIcon.textContent = q.icon;
+      elCivBannerName.textContent = q.title;
+      elQPos.textContent = `Question ${state.index+1}/20`;
+      elQTitle.textContent = q.title;
+      elQText.textContent = q.question;
+      elAnswers.innerHTML = "";
+      elFeedback.textContent = "";
+      elBtnNext.disabled = true;
+      state.answered = false;
+      // answers (shuffle order)
+      const shuffled = q.choices
+        .map(x=>({ ...x })) // copy
+        .sort(()=>Math.random()-0.5);
+      shuffled.forEach((c, i)=>{
+        const btn = document.createElement("button");
+        btn.className = "answer";
+        btn.type = "button";
+        btn.dataset.correct = c.correct ? "1":"0";
+        btn.innerHTML = `<span>${String.fromCharCode(65+i)}.</span> ${c.t}`;
+        btn.addEventListener("click", ()=>selectAnswer(btn));
+        elAnswers.appendChild(btn);
+      });
+      // progress
+      elProgress.style.width = `${(state.index)/QUIZ.length*100}%`;
+    }
+    function lockAnswers(){
+      [...elAnswers.children].forEach(btn=>btn.setAttribute("disabled",""));
+    }
+    function selectAnswer(btn){
+      if(state.answered) return;
+      state.answered = true;
+      lockAnswers();
+      const isCorrect = btn.dataset.correct === "1";
+      if(isCorrect){
+        btn.classList.add("correct");
+        elFeedback.textContent = (QUIZ[state.index].good || "Bravo !");
+        elFeedback.style.color = "var(--good)";
+        state.score += 1;
+      } else {
+        btn.classList.add("wrong");
+        const correctBtn = [...elAnswers.children].find(b=>b.dataset.correct==="1");
+        if(correctBtn){ correctBtn.classList.add("correct"); }
+        elFeedback.textContent = (QUIZ[state.index].bad || "Non, ce n'est pas ça.");
+        elFeedback.style.color = "var(--bad)";
+      }
+      elBtnNext.disabled = false;
+      renderHeader();
+      save();
+    }
+    function next(){
+      if(state.index < QUIZ.length-1){
+        state.index += 1;
+        showQuestion();
+        save();
+      } else {
+        elProgress.style.width = "100%";
+        const msg = state.score===20 ? "🎉 Incroyable : 20/20 !" :
+                    state.score>=15 ? "Super score !" :
+                    state.score>=10 ? "Bien joué !" : "Tu feras mieux la prochaine fois 🙂";
+        elEndLine.textContent = `${state.pseudo}, tu as obtenu ${state.score}/20. ${msg}`;
+        show(elEnd);
+        updateAdminVisibility();
+        save();
+      }
+    }
+    function replay(){
+      state.index = 0; state.score = 0; save();
+      showQuestion(); show(elQuiz);
+    }
+    function share(){
+      const text = `Mon score à Civilisa'Sceaux : ${state.score}/20 !`;
+      const url = location.href;
+      if(navigator.share){
+        navigator.share({title:"Civilisa'Sceaux", text, url}).catch(()=>{});
+      }else{
+        prompt("Copie/colle ce texte :", text + " " + url);
+      }
+    }
+    function adminUnlock(){
+      const pin = prompt("Code PIN admin :");
+      if(pin === ADMIN_PIN){
+        state.adminUnlocked = true;
+        alert("Mode admin activé.");
+        updateAdminVisibility();
+      }else{
+        alert("Code incorrect.");
+      }
+    }
+    function resetMe(){
+      if(!(state.pseudo===ADMIN_NAME && state.adminUnlocked)) return;
+      state.index = 0; state.score = 0; save();
+      alert("Score réinitialisé pour " + state.pseudo);
+      renderHeader();
+    }
+    function resetAll(){
+      if(!(state.pseudo===ADMIN_NAME && state.adminUnlocked)) return;
+      if(confirm("Tout effacer (tous les pseudos) ?")){
+        localStorage.removeItem(STORAGE_KEY);
+        alert("Toutes les données ont été supprimées.");
+        renderHeader();
+        renderLeaderboard();
+      }
+    }
+
+    // --- Leaderboard ---
+    function renderLeaderboard(){
+      if(!elLeaderboard) return;
+      const all = getAll();
+      const rows = Object.entries(all).map(([name, obj])=>({name, score: obj.score|0, t: obj.t|0}));
+      rows.sort((a,b)=> b.score - a.score || a.t - b.t);
+      const top = rows.slice(0, 10);
+      if(top.length===0){
+        elLeaderboard.innerHTML = '<p class="muted" style="margin:0">Aucun score enregistré pour le moment.</p>';
+        return;
+      }
+      const items = top.map((r,i)=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:#0b1421">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="pill">${i+1}</div>
+            <strong>${r.name}</strong>
+          </div>
+          <div><span class="pill">🏆 ${r.score}/20</span></div>
+        </div>
+      `).join("");
+      elLeaderboard.innerHTML = items;
+    }
+
+    // events
+    elBtnStart.addEventListener("click", start);
+    elBtnQuit.addEventListener("click", quit);
+    elBtnNext.addEventListener("click", next);
+    elBtnReplay.addEventListener("click", replay);
+    elBtnShare.addEventListener("click", share);
+    elBtnAdmin.addEventListener("click", adminUnlock);
+    elBtnResetMe.addEventListener("click", resetMe);
+    elBtnResetAll.addEventListener("click", resetAll);
+    elPseudo.addEventListener("input", updateAdminVisibility);
+
+    // Prefill if localStorage has one profile & first load leaderboard
+    (function init(){
+      const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      const names = Object.keys(all);
+      if(names.length===1){ elPseudo.value = names[0]; }
+      updateAdminVisibility();
+      renderLeaderboard();
+    })();
+  </script>
+
+</body>
+</html>
