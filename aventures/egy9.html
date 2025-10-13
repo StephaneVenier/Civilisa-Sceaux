@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EGY9 — Aventure Égyptienne</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body data-page="step" data-step="egy9">
+<div class="wrap">
+  <header>
+    <div class="brand">🦂 Civilisa’Sceaux — <span style="color:var(--accent)">Aventure Égyptienne</span></div>
+    <div class="pill">Maître du jeu : <strong>Stefanubis</strong></div>
+  </header>
+  
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <h2>🏺 Étape EGY9</h2>
+    <div class="pill">Joueur : <strong id="player">—</strong></div>
+  </div>
+  <div class="encouragement" id="msg">—</div>
+  <div style="margin:12px 0">
+    <div class="progress"><div class="bar" id="progressBar" style="width:0%"></div></div>
+    <div class="muted" id="progressTxt" style="margin-top:6px">0/10 codes validés</div>
+  </div>
+  <div class="notice" style="margin-top:12px">
+    <strong>Consigne :</strong> saisis le <em>mot-code</em> trouvé sur le terrain (test sans QR).
+  </div>
+  <div class="row" style="margin-top:12px">
+    <div class="col">
+      <label for="codeInput">Mot-code</label>
+      <input type="text" id="codeInput" placeholder="Ex. …">
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="btnValider">Valider</button>
+        <a class="btn ghost" id="btnPrev">← Étape précédente</a>
+        <a class="btn ghost" id="btnNext">Étape suivante →</a>
+        <a class="btn ghost" id="btnHome">Retour aventures</a>
+      </div>
+      <div id="feedback" style="margin-top:10px"></div>
+    </div>
+    <div class="col">
+      <div class="card">
+        <h3>⏳ Fin de l’édition</h3>
+        <div class="timer" id="deadline">—</div>
+        <p class="muted" style="margin-top:6px">Temps restant visible sur la page Aventures.</p>
+      </div>
+      <div class="card">
+        <h3>🗺️ Navigation</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <a class="btn small" href="egy1.html">EGY1</a>
+          <a class="btn small ghost" href="egy2.html">EGY2</a>
+          <a class="btn small ghost" href="egy3.html">EGY3</a>
+          <a class="btn small ghost" href="egy4.html">EGY4</a>
+          <a class="btn small ghost" href="egy5.html">EGY5</a>
+          <a class="btn small ghost" href="egy6.html">EGY6</a>
+          <a class="btn small ghost" href="egy7.html">EGY7</a>
+          <a class="btn small ghost" href="egy8.html">EGY8</a>
+          <a class="btn small ghost" href="egy9.html">EGY9</a>
+          <a class="btn small ghost" href="egy10.html">EGY10</a>
+          <a class="btn small ghost" href="finale.html">Finale</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
