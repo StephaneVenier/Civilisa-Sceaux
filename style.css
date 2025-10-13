@@ -77,3 +77,12 @@ input[type="text"]:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(96,
 
 /* Option lisibilité maxi : légère ombre si le fond est très vif */
 .on-light .with-shadow { text-shadow: 0 1px 0 rgba(255,255,255,.5); }
+/* Texte sombre dans les blocs à fond clair/vif */
+.on-light,
+.on-light * { color: #111 !important; }
+
+.on-light .muted { color: #333 !important; }
+
+/* Liens éventuels */
+.on-light a { color: #0a0a0a !important; text-decoration: underline; }
+.on-light a:hover { opacity: .85; }
