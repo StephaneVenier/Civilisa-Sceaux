@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jouer — Aventure</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="play">
+<div class="wrap">
+  <header>
+    <div class="brand">🦂 Civilisa’Sceaux — <span style="color:var(--accent)">Aventure Égyptienne</span></div>
+    <div class="pill">Joueur : <strong id="player">—</strong></div>
+  </header>
+  <div class="card">
+    <h2>🔑 Saisie des codes (ordre libre)</h2>
+    <div style="margin:12px 0">
+      <div class="progress"><div class="bar" id="progressBar" style="width:0%"></div></div>
+      <div class="muted" id="progressTxt" style="margin-top:6px">0/10 codes</div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <div class="col">
+        <label for="codeInput">Mot-code</label>
+        <input type="text" id="codeInput" placeholder="Ex. ANUBIS">
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="btnValider">Valider</button>
+          <a class="btn ghost" id="btnHome">Aventures / Classement</a>
+        </div>
+        <div id="feedback" style="margin-top:8px"></div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h3>🧾 Codes trouvés</h3>
+          <div id="checklist"></div>
+          <p class="muted" style="margin-top:8px">Les codes s’affichent barrés quand tu les as validés. Les autres restent masqués.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

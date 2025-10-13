@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aventures — Civilisa’Sceaux</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body data-page="index">
+<div class="wrap">
+  <header>
+    <div class="brand">🦂 Civilisa’Sceaux — <span style="color:var(--accent)">Aventure Égyptienne</span></div>
+    <div class="pill">Maître du jeu : <strong>Stefanubis</strong></div>
+  </header>
+  <div class="card">
+    <h1>📜 Aventures</h1>
+    <p class="muted">Version simplifiée : saisie des codes dans <strong>n'importe quel ordre</strong> sur une seule page.</p>
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <h2>🏺 Aventure Égyptienne</h2>
+          <div style="margin-top:12px">
+            <a class="btn" id="btnStart">Lancer / Continuer</a>
+            <a class="btn ghost small" id="btnIntro">Changer/Entrer mon pseudo</a>
+          </div>
+          <div style="margin-top:16px" class="notice">
+            <strong>Infos :</strong> stockage <em>local</em> (même appareil). 10 codes, 1 point chacun.
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h3>🏆 Classement local</h3>
+          <table>
+            <thead><tr><th>Pseudo</th><th>Codes</th><th>Score</th><th>Dernière maj</th></tr></thead>
+            <tbody id="board"><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
+          </table>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn ghost small" id="btnExport">Exporter .xlsx</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
