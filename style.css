@@ -63,3 +63,23 @@ input[type="text"]:focus{border-color:var(--focus);box-shadow:0 0 0 3px rgba(96,
 .banner-inner{padding:16px;display:flex;align-items:center;gap:12px}
 .banner .big{font-size:44px}
 .hidden{display:none !important}
+
+/* Texte sombre pour les blocs à fond clair ou coloré */
+.on-light,
+.on-light * { color: #111 !important; }
+
+/* Variante pour le texte secondaire dans ces blocs */
+.on-light .muted { color: #333 !important; }
+
+/* Si tu as des liens dans ces cadres */
+.on-light a { color: #0a0a0a !important; text-decoration: underline; }
+.on-light a:hover { opacity: .85; }
+
+/* Option : un style prêt à l’emploi si tu veux un cadre clair */
+.card.light {
+  background: #fff !important;
+  border-color: #ddd !important;
+  color: #111 !important;
+}
+.card.light .muted { color: #444 !important; }
+
