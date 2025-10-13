@@ -1,0 +1,42 @@
+
+:root{--bg:#0c0f16;--panel:#101622;--ink:#e8ecf6;--muted:#aab4c8;--accent:#f6c453;--accent-2:#1f2b44;--ok:#4ade80;--bad:#ef4444}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#0b0f17,#0c0f16);color:var(--ink);font-family:Manrope,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.wrap{max-width:1000px;margin:24px auto;padding:16px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.brand{font-weight:800;letter-spacing:.3px}
+.card{background:var(--panel);border:1px solid rgba(246,196,83,.25);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+h1,h2,h3{margin:.2em 0 .4em}
+.row{display:flex;gap:16px;flex-wrap:wrap}
+.col{flex:1 1 320px}
+.btn{display:inline-block;background:var(--accent);color:#1b1405;border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+.btn.ghost{background:transparent;border:1px solid var(--accent);color:var(--accent)}
+.btn.small{padding:6px 10px;border-radius:10px;font-weight:700}
+input[type="text"]{width:100%;padding:12px 12px;border-radius:12px;border:1px solid #2a344b;background:#0d1320;color:#e7edff}
+.muted{color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #1c2436;text-align:left}
+th{color:#cbd6ea}
+.timer{font-variant-numeric:tabular-nums;font-size:1.125rem;background:#0e1524;border:1px dashed #2a3550;border-radius:12px;padding:10px 12px;display:inline-block}
+.progress{height:10px;border-radius:10px;background:#151b29;border:1px solid #2a3550;overflow:hidden}
+.bar{height:100%;background:linear-gradient(90deg,#f6c453,#e6b02e);width:0%}
+.pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#0f1626;border:1px solid #2a3550;color:#cbd6ea;font-size:.85rem}
+.ok{color:var(--ok)} .bad{color:var(--bad)}
+.encouragement{font-style:italic;color:#d7e5ff}
+.finale{
+  position:relative; height:260px; border-radius:16px; overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 10%, #443114 0%, #2b1f0d 45%, #1c1409 100%);
+  border:1px solid rgba(246,196,83,.35);
+}
+.finale::after{
+  content:"Papyrus sacré — symbole à déchiffrer";
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:#f3e4c2;font-weight:800;font-size:1.2rem;letter-spacing:.8px;text-shadow:0 1px 0 #000;
+  filter:blur(14px);
+  transition:filter .4s ease;
+}
+.finale.unlock::after{filter:blur(0)}
+.notice{background:#0e1628;border-left:4px solid #3b82f6;padding:12px;border-radius:10px}
+.grid-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.stepcard{border:1px solid #2a3550;border-radius:12px;padding:12px;background:#0e1524}
+code{background:#0e1524;border:1px solid #2a3550;padding:2px 6px;border-radius:6px}

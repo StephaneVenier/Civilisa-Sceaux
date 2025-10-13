@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finale — Aventure Égyptienne</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">🦂 Civilisa’Sceaux — <span style="color:var(--accent)">Aventure Égyptienne</span></div>
+    <div class="pill">Maître du jeu : <strong>Stefanubis</strong></div>
+  </header>
+  
+<div class="card">
+  <h2>🏁 Papyrus final</h2>
+  <p class="muted">Le papyrus est flou au départ. Il se révèle quand <strong>tous les 10</strong> codes sont validés.</p>
+  <div class="finale"></div>
+  <div class="row" style="margin-top:12px">
+    <div class="col">
+      <div class="progress"><div class="bar" id="progressBar" style="width:0%"></div></div>
+      <p class="muted" id="progressTxt" style="margin-top:6px">0/10 codes validés</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn ghost" id="btnBack">Revenir aux étapes</a>
+        <a class="btn ghost" id="btnHome">Aventures / Classement</a>
+        <button class="btn" id="btnExport">Exporter .xlsx</button>
+      </div>
+    </div>
+    <div class="col">
+      <div class="notice">
+        <strong>Bravo !</strong> Quand l’image est nette, “Stefanubis” peut déclarer le vainqueur et remettre la récompense.
+      </div>
+    </div>
+  </div>
+</div>
+<script>document.addEventListener('DOMContentLoaded',pageFinale);</script>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
