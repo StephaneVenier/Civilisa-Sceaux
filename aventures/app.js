@@ -154,6 +154,83 @@ function pagePlay(){
   };
 }
 
+// === Scanner QR intégré (BarcodeDetector) ===
+const TOKEN_RE = /[A-Z0-9]{2,5}-[A-Z0-9]{6,8}-[A-Z0-9]{2}/; // format de nos tokens
+let scanStream = null, scanTimer = null;
+
+async function startQRScan(){
+  const hasDetector = ('BarcodeDetector' in window);
+  const scanBox = document.getElementById('scanBox');
+  const video   = document.getElementById('scanVideo');
+  const hint    = document.getElementById('scanHint');
+
+  scanBox.style.display = 'block';
+
+  try {
+    // Ouvre la caméra arrière si possible
+    scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    video.srcObject = scanStream;
+
+    if (!hasDetector) {
+      hint.innerHTML = "💡 Ton navigateur ne supporte pas le scan intégré. Utilise l'appareil photo : le QR ouvrira automatiquement la page de validation.";
+      return;
+    }
+
+    const detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+
+    const tick = async () => {
+      if (!video.readyState || video.readyState < 2) { // HAVE_CURRENT_DATA
+        scanTimer = requestAnimationFrame(tick);
+        return;
+      }
+      try {
+        const codes = await detector.detect(video);
+        if (codes && codes.length) {
+          const raw = (codes[0].rawValue || '').trim();
+          stopQRScan();
+
+          // 1) Si le QR contient déjà l'URL complète -> on y va
+          if (/^https?:\/\//i.test(raw)) {
+            // si l'URL n'a pas ?token= mais affiche juste le token, on tente d'extraire
+            const url = new URL(raw, location.origin);
+            const t = url.searchParams.get('token') || (raw.match(TOKEN_RE) || [])[0];
+            if (t) location.href = `redeem.html?token=${encodeURIComponent(t)}`;
+            else   location.href = raw; // URL quelconque (au cas où)
+            return;
+          }
+          // 2) Sinon, si c'est directement un token -> on envoie vers redeem
+          const token = (raw.match(TOKEN_RE) || [])[0];
+          if (token) {
+            location.href = `redeem.html?token=${encodeURIComponent(token)}`;
+            return;
+          }
+
+          // 3) Rien de reconnu -> relancer le scan
+          startQRScan();
+          return;
+        }
+      } catch(e){ /* ignore et continue */ }
+      scanTimer = requestAnimationFrame(tick);
+    };
+    tick();
+
+  } catch (err) {
+    hint.innerHTML = "🚫 Impossible d'accéder à la caméra. Autorise l'accès, puis réessaie. Sinon scanne avec l'appareil photo (le QR ouvrira la page).";
+    console.error(err);
+  }
+}
+
+function stopQRScan(){
+  const scanBox = document.getElementById('scanBox');
+  scanBox.style.display = 'none';
+  if (scanTimer) cancelAnimationFrame(scanTimer), scanTimer = null;
+  if (scanStream){
+    scanStream.getTracks().forEach(t => t.stop());
+    scanStream = null;
+  }
+}
+
+
 // Auto init
 document.addEventListener("DOMContentLoaded", ()=>{
   const page=document.body.dataset.page;
