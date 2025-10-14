@@ -1,94 +1,94 @@
-<!doctype html><html lang="fr"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Validation — Aventure</title>
-<link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="style.css">
-</head><body class="wrap">
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Validation — Aventure</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { max-width: 800px; margin: 24px auto; padding: 16px; }
+    .ok{color:#047857;font-weight:600}
+    .bad{color:#b91c1c;font-weight:600}
+    .muted{opacity:.8}
+  </style>
+</head>
+<body>
   <h2>Validation du code…</h2>
   <div id="status" class="card">Initialisation…</div>
+  <p class="muted" id="detail" style="margin-top:8px"></p>
+  <p style="margin-top:12px"><a class="btn" href="index.html">🏁 Retour à l’aventure</a></p>
 
   <script type="module">
+    // --- Imports Firebase (CDN) ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-    // TODO: ta config Firebase
-    const firebaseConfig = { apiKey:"…", authDomain:"…", projectId:"…", appId:"…" };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
-    await signInAnonymously(auth);
+    const statusEl = document.getElementById('status');
+    const detailEl = document.getElementById('detail');
+    const log = (t, d="") => { statusEl.innerHTML = t; detailEl.textContent = d; console.log("[redeem]", t, d); };
 
-    // Récup token dans l’URL
-    const params = new URLSearchParams(location.search);
-    const token  = (params.get('token') || '').trim();
-    const status = document.getElementById('status');
+    // --- Ta config Firebase ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXUmcICx_NBCUl8Nkcb-hgPL7BqLnzFDg",
+      authDomain: "civilisa-sceaux.firebaseapp.com",
+      projectId: "civilisa-sceaux",
+      storageBucket: "civilisa-sceaux.firebasestorage.app",
+      messagingSenderId: "512345085139",
+      appId: "1:512345085139:web:8af51687e930d1b083b026"
+    };
 
-    if (!token) {
-      status.innerHTML = "<span class='bad'>❌ Aucun token dans l’URL.</span>";
-      throw new Error("no token");
-    }
+    // On met tout dans une IIFE async (compatible tous navigateurs modernes)
+    (async () => {
+      try {
+        log("Initialisation Firebase…");
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db   = getFirestore(app);
 
-    // Pseudo (si stocké en local par ton intro): sinon, force le joueur à se connecter d’abord
-    const nickname = (localStorage.getItem('civ_session')||'').trim().toLowerCase();
-    if (!nickname) {
-      status.innerHTML = "⚠️ Ouvre d’abord l’aventure et enregistre ton pseudo, puis re-scane.";
-      throw new Error("no nickname");
-    }
+        log("Connexion anonyme…");
+        await signInAnonymously(auth);
 
-    // 1) Vérifier que le token existe et est enabled
-    const tokRef = doc(db, 'tokens', token);
-    const tokSnap = await getDoc(tokRef);
-    if (!tokSnap.exists() || tokSnap.data().enabled === false) {
-      status.innerHTML = "<span class='bad'>❌ Code invalide ou désactivé.</span>";
-      throw new Error("invalid");
-    }
+        const params = new URLSearchParams(location.search);
+        const token  = (params.get('token') || '').trim();
+        if (!token) { log("<span class='bad'>❌ Aucun token dans l’URL.</span>","Le QR doit contenir ?token=..."); return; }
 
-    // 2) Anti-doublon : clé composite <nickname>_<token>
-    const findId = `${nickname}_${token}`;
-    const findRef = doc(db, 'finds', findId);
-    const findSnap = await getDoc(findRef);
-    if (findSnap.exists()) {
-      status.innerHTML = "⚠️ Code déjà validé pour ce joueur.";
-    } else {
-      await setDoc(findRef, {
-        playerId: (auth.currentUser?.uid || ''),
-        nickname,
-        token,
-        ts: serverTimestamp()
-      });
-      status.innerHTML = "<span class='ok'>✅ Bravo ! +1 point</span>";
-    }
+        // Récupère / demande le pseudo si absent
+        let nickname = (localStorage.getItem('civ_session')||'').trim().toLowerCase();
+        if (!nickname) {
+          nickname = (prompt("Entre ton pseudo/prénom pour valider ce QR :")||"").trim().toLowerCase();
+          if (!nickname) { log("⚠️ Validation annulée.","Pseudo obligatoire."); return; }
+          localStorage.setItem('civ_session', nickname);
+        }
 
-    // Petit lien de retour
-    const back = document.createElement('p');
-    back.innerHTML = `<a class="btn" href="index.html">🏁 Retour à l'aventure</a>`;
-    document.body.appendChild(back);
+        log("Vérification du code…", token);
+        const tokRef = doc(db, 'tokens', token);
+        const tokSnap = await getDoc(tokRef);
+        if (!tokSnap.exists()) { log("<span class='bad'>❌ Code inconnu.</span>", "Vérifie que le token existe dans 'tokens/'."); return; }
+        if (tokSnap.data().enabled === false) { log("<span class='bad'>❌ Code désactivé.</span>"); return; }
+
+        log("Enregistrement…");
+        const findId = `${nickname}_${token}`;
+        const findRef = doc(db, 'finds', findId);
+        const findSnap = await getDoc(findRef);
+
+        if (findSnap.exists()) {
+          log("⚠️ Code déjà validé pour ce joueur.", "Aucun point supplémentaire.");
+        } else {
+          await setDoc(findRef, {
+            playerId: (auth.currentUser?.uid || ''),
+            nickname,
+            token,
+            ts: serverTimestamp()
+          });
+          log("<span class='ok'>✅ Bravo ! +1 point</span>", `Joueur : ${nickname} • Code : ${token}`);
+        }
+      } catch (e) {
+        console.error(e);
+        log("<span class='bad'>❌ Erreur inattendue.</span>", (e && e.message) ? e.message : String(e));
+      }
+    })();
   </script>
-
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp, collection } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
-
-  // TA CONFIG
-  const firebaseConfig = {
-    apiKey: "AIzaSyCXUmcICx_NBCUl8Nkcb-hgPL7BqLnzFDg",
-    authDomain: "civilisa-sceaux.firebaseapp.com",
-    projectId: "civilisa-sceaux",
-    storageBucket: "civilisa-sceaux.firebasestorage.app",
-    messagingSenderId: "512345085139",
-    appId: "1:512345085139:web:8af51687e930d1b083b026"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
-
-  // Auth anonyme (nécessaire pour écrire)
-  await signInAnonymously(auth);
-
-  // Expose à app.js
-  window.fb = { app, auth, db, doc, getDoc, setDoc, onSnapshot, serverTimestamp, collection };
-</script>
-
-</body></html>
+</body>
+</html>
