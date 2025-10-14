@@ -1,0 +1,67 @@
+<!doctype html><html lang="fr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validation — Aventure</title>
+<link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="style.css">
+</head><body class="wrap">
+  <h2>Validation du code…</h2>
+  <div id="status" class="card">Initialisation…</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    // TODO: ta config Firebase
+    const firebaseConfig = { apiKey:"…", authDomain:"…", projectId:"…", appId:"…" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    await signInAnonymously(auth);
+
+    // Récup token dans l’URL
+    const params = new URLSearchParams(location.search);
+    const token  = (params.get('token') || '').trim();
+    const status = document.getElementById('status');
+
+    if (!token) {
+      status.innerHTML = "<span class='bad'>❌ Aucun token dans l’URL.</span>";
+      throw new Error("no token");
+    }
+
+    // Pseudo (si stocké en local par ton intro): sinon, force le joueur à se connecter d’abord
+    const nickname = (localStorage.getItem('civ_session')||'').trim().toLowerCase();
+    if (!nickname) {
+      status.innerHTML = "⚠️ Ouvre d’abord l’aventure et enregistre ton pseudo, puis re-scane.";
+      throw new Error("no nickname");
+    }
+
+    // 1) Vérifier que le token existe et est enabled
+    const tokRef = doc(db, 'tokens', token);
+    const tokSnap = await getDoc(tokRef);
+    if (!tokSnap.exists() || tokSnap.data().enabled === false) {
+      status.innerHTML = "<span class='bad'>❌ Code invalide ou désactivé.</span>";
+      throw new Error("invalid");
+    }
+
+    // 2) Anti-doublon : clé composite <nickname>_<token>
+    const findId = `${nickname}_${token}`;
+    const findRef = doc(db, 'finds', findId);
+    const findSnap = await getDoc(findRef);
+    if (findSnap.exists()) {
+      status.innerHTML = "⚠️ Code déjà validé pour ce joueur.";
+    } else {
+      await setDoc(findRef, {
+        playerId: (auth.currentUser?.uid || ''),
+        nickname,
+        token,
+        ts: serverTimestamp()
+      });
+      status.innerHTML = "<span class='ok'>✅ Bravo ! +1 point</span>";
+    }
+
+    // Petit lien de retour
+    const back = document.createElement('p');
+    back.innerHTML = `<a class="btn" href="index.html">🏁 Retour à l'aventure</a>`;
+    document.body.appendChild(back);
+  </script>
+</body></html>
