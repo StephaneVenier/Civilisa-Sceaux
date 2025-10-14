@@ -142,3 +142,18 @@ document.addEventListener("DOMContentLoaded", ()=>{
   else if(page==="intro") pageIntro();
   else if(page==="play") pagePlay();
 });
+async function fbLiveLeaderboard(fillTable) {
+  // fillTable(rows) est un callback qui reçoit [{ nickname, score }, ...]
+  const colRef = window.fb.collection(window.fb.db, 'finds');
+  window.fb.onSnapshot(colRef, (snap) => {
+    const map = new Map(); // nickname -> count
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      if (!d || !d.nickname) return;
+      map.set(d.nickname, (map.get(d.nickname)||0) + 1);
+    });
+    const rows = [...map.entries()].map(([nickname, score]) => ({ nickname, score }));
+    rows.sort((a,b)=> b.score - a.score || a.nickname.localeCompare(b.nickname));
+    fillTable(rows);
+  });
+}
