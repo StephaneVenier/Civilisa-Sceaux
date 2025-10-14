@@ -28,3 +28,5 @@ ul.codes li.found{opacity:.6;text-decoration:line-through}
 .placeholder{opacity:.6;letter-spacing:2px}
 .notice{background:#0e1628;border-left:4px solid #3b82f6;padding:12px;border-radius:10px}
 .admin{background:#140f1f;border:1px solid #3b2b65;border-radius:12px;padding:10px;margin-top:10px}
+/* Cadre visuel cible (optionnel si tu veux un overlay plus tard) */
+#scanVideo { background:#000; }
