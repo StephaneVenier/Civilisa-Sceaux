@@ -179,7 +179,6 @@ async function fbLiveLeaderboard(fillTable) {
 // === Classement live depuis Firestore ===
 async function fbLiveLeaderboard(fillTable) {
   const colRef = window.fb.collection(window.fb.db, 'finds');
-  // Écoute en temps réel : onSnapshot déclenche à chaque changement
   window.fb.onSnapshot(colRef, (snap) => {
     const map = new Map(); // nickname -> score
     snap.forEach(docSnap => {
@@ -192,3 +191,5 @@ async function fbLiveLeaderboard(fillTable) {
     fillTable(rows);
   });
 }
+
+
