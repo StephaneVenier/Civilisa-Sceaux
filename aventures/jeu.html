@@ -47,6 +47,22 @@
         <input type="text" id="codeInput" placeholder="Ex. Stef est le best">
         <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn" id="btnValider">Valider</button>
+          <!-- Bouton scanner -->
+<button class="btn ghost" id="btnScan">📷 Scanner un QR</button>
+
+<!-- Zone scanner (cachée au départ) -->
+<div id="scanBox" style="display:none;margin-top:12px">
+  <div class="card" style="position:relative">
+    <video id="scanVideo" autoplay playsinline style="width:100%;border-radius:12px"></video>
+    <div id="scanHint" class="muted" style="margin-top:6px">
+      Aligne le QR dans le cadre. Autorise l’accès à la caméra si demandé.
+    </div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn small" id="btnStopScan">Arrêter</button>
+    </div>
+  </div>
+</div>
+
           <a class="btn ghost" id="btnHome">Aventures / Classement</a>
         </div>
         <div id="feedback" style="margin-top:8px"></div>
