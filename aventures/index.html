@@ -72,6 +72,33 @@
     </div>
   </div>
 </div>
+
+   <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp, collection
+  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+  // TODO: remplace par ta config depuis la console Firebase
+  const firebaseConfig = {
+    apiKey: "…",
+    authDomain: "…",
+    projectId: "…",
+    appId: "…"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // Auth anonyme (nécessaire pour écrire)
+  await signInAnonymously(auth);
+
+  // Expose à app.js
+  window.fb = { app, auth, db, doc, getDoc, setDoc, onSnapshot, serverTimestamp, collection };
+</script>
+
 <script src="app.js"></script>
 </body>
 </html>
