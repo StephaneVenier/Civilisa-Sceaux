@@ -64,4 +64,31 @@
     back.innerHTML = `<a class="btn" href="index.html">🏁 Retour à l'aventure</a>`;
     document.body.appendChild(back);
   </script>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp, collection } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+  // TA CONFIG
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXUmcICx_NBCUl8Nkcb-hgPL7BqLnzFDg",
+    authDomain: "civilisa-sceaux.firebaseapp.com",
+    projectId: "civilisa-sceaux",
+    storageBucket: "civilisa-sceaux.firebasestorage.app",
+    messagingSenderId: "512345085139",
+    appId: "1:512345085139:web:8af51687e930d1b083b026"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // Auth anonyme (nécessaire pour écrire)
+  await signInAnonymously(auth);
+
+  // Expose à app.js
+  window.fb = { app, auth, db, doc, getDoc, setDoc, onSnapshot, serverTimestamp, collection };
+</script>
+
 </body></html>
