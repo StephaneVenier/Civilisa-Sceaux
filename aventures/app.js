@@ -63,21 +63,40 @@ function adminResetAll(pwd){
 // Pages
 function pageIndex(){
   ensureMeta();
-  const players=loadPlayers();
-  const leaderboard=computeLeaderboard(players);
-  const tbody=$("#board");
-  tbody.innerHTML = leaderboard.length? leaderboard.map(r=>`<tr><td>${esc(r.pseudo)}</td><td>${r.found}/${GAME.words.length}</td><td>${r.score}</td><td>${r.lastTs? new Date(r.lastTs).toLocaleString('fr-FR'):''}</td></tr>`).join("") : `<tr><td colspan="4" class="muted">Aucun joueur pour l’instant.</td></tr>`;
+
+  const tbody = $("#board");
+
+  // 🔴 (ancien) classement local — à supprimer/mettre en commentaire :
+  // const players = loadPlayers();
+  // const leaderboard = computeLeaderboard(players);
+  // tbody.innerHTML = ...
+
+  // 🟢 (nouveau) classement Firestore en temps réel
+  fbLiveLeaderboard((rows) => {
+    tbody.innerHTML = rows.length
+      ? rows.map(r => `
+          <tr>
+            <td>${r.nickname}</td>
+            <td>—</td>
+            <td>${r.score}</td>
+            <td>live</td>
+          </tr>`).join("")
+      : `<tr><td colspan="4" class="muted">Aucun joueur pour l’instant.</td></tr>`;
+  });
+
+  // le reste inchangé
   $("#btnStart").onclick=()=>{ const p=getSession(); location.href = p? "jeu.html" : "intro.html"; };
   $("#btnIntro").onclick=()=> location.href="intro.html";
   $("#btnExport").onclick=exportXLSX;
-  // Timer
-  const stop = startTimer($("#timer"));
-  // Admin
+
+  startTimer($("#timer"));
+
   $("#adminBtn").onclick=()=>{
     const pwd = prompt("Mot de passe admin :");
     if(pwd!==null) adminResetAll(pwd);
   };
 }
+
 function pageIntro(){
   const input=$("#pseudo"); input.value=getSession();
   $("#btnSave").onclick=()=>{
@@ -151,6 +170,22 @@ async function fbLiveLeaderboard(fillTable) {
       const d = docSnap.data();
       if (!d || !d.nickname) return;
       map.set(d.nickname, (map.get(d.nickname)||0) + 1);
+    });
+    const rows = [...map.entries()].map(([nickname, score]) => ({ nickname, score }));
+    rows.sort((a,b)=> b.score - a.score || a.nickname.localeCompare(b.nickname));
+    fillTable(rows);
+  });
+}
+// === Classement live depuis Firestore ===
+async function fbLiveLeaderboard(fillTable) {
+  const colRef = window.fb.collection(window.fb.db, 'finds');
+  // Écoute en temps réel : onSnapshot déclenche à chaque changement
+  window.fb.onSnapshot(colRef, (snap) => {
+    const map = new Map(); // nickname -> score
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      if (!d || !d.nickname) return;
+      map.set(d.nickname, (map.get(d.nickname) || 0) + 1);
     });
     const rows = [...map.entries()].map(([nickname, score]) => ({ nickname, score }));
     rows.sort((a,b)=> b.score - a.score || a.nickname.localeCompare(b.nickname));
