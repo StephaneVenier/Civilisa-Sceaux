@@ -152,6 +152,9 @@ function pagePlay(){
     renderChecklist($("#checklist"), foundSet);
     fb.textContent=`✅ « ${match} » validé (+1)`; fb.className="ok";
   };
+  document.getElementById('btnScan').onclick = startQRScan;
+document.getElementById('btnStopScan').onclick = stopQRScan;
+
 }
 
 // === Scanner QR intégré (BarcodeDetector) ===
