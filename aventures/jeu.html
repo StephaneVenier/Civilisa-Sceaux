@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jeu — Civilisa'Sceaux</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="aventures.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body data-page="play">
+  <nav class="nav">
+    <div class="row">
+      <div class="brand"><div class="logo"><div>🏛️</div></div> Civilisa'Sceaux</div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <a href="../index.html">Accueil</a>
+        <a href="../catalogue.html">Catalogue</a>
+        <a class="active" href="index.html">Aventures</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="card banner" style="--themeGrad:linear-gradient(90deg,#f6c453,#1f2b44)">
+      <div class="banner-inner"><div class="big">🦂</div><div>
+        <h2 style="margin:0">Bienvenue dans le jeu de Stefanubis</h2>
+        <p style="margin:6px 0 0">Sois le premier à trouver des codes partout dans la structure.</p>
+      </div></div>
+    </div>
+
+    <div class="card">
+      <div class="timer" id="timer">Calcul…</div>
+      <div style="margin:12px 0">
+        <div class="progress"><div class="bar" id="progressBar" style="width:0%"></div></div>
+        <div class="muted" id="progressTxt" style="margin-top:6px">0/10 codes</div>
+      </div>
+
+      <div class="grid cols-2" style="margin-top:12px">
+        <div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn ghost" id="btnScan">📷 Scanner un QR</button>
+            <a class="btn" href="index.html">🏁 Classement</a>
+          </div>
+
+          <div id="scanBox" style="display:none;margin-top:12px">
+            <div class="card" style="position:relative">
+              <video id="scanVideo" autoplay playsinline style="width:100%;border-radius:12px"></video>
+              <div id="scanHint" class="muted" style="margin-top:6px">Aligne le QR dans le cadre. Autorise l’accès à la caméra si demandé.</div>
+              <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn small" id="btnStopScan">Arrêter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <h3 style="margin-top:0">🧾 Codes trouvés</h3>
+            <div id="checklist"></div>
+            <p class="muted" style="margin-top:8px">Les codes s’affichent barrés quand tu les as validés.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="firebase-init.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

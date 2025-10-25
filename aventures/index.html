@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aventures — Civilisa'Sceaux</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="aventures.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body data-page="index">
+  <nav class="nav">
+    <div class="row">
+      <div class="brand"><div class="logo"><div>🏛️</div></div> Civilisa'Sceaux</div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <a href="../index.html">Accueil</a>
+        <a href="../catalogue.html">Catalogue</a>
+        <a class="active" href="index.html">Aventures</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="card banner" style="--themeGrad:linear-gradient(90deg,#f6c453,#1f2b44)">
+      <div class="banner-inner"><div class="big">🦂</div><div>
+        <h1 style="margin:0">Aventure Égyptienne</h1>
+        <p style="margin:6px 0 0">Scanne 10 QR (1 pt chacun) avant vendredi 16:00.</p>
+      </div></div>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="card">
+        <h2 style="margin:0">⏳ Temps restant</h2>
+        <div class="timer" id="timer">Calcul…</div>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <a class="btn primary" id="btnStart">Lancer / Continuer</a>
+          <a class="btn ghost" id="btnIntro">Changer/Entrer mon pseudo</a>
+        </div>
+        <div class="notice" style="margin-top:12px">
+          <strong>Infos :</strong> pseudo stocké localement. Les <em>scores</em> sont sur Firebase → <strong>visibles par tous</strong>.
+        </div>
+        <div class="card" style="margin-top:12px">
+          <strong>Admin (Stephane)</strong>
+          <p class="muted" style="margin:.25rem 0">Réinitialiser le timer (vendredi 16:00).</p>
+          <button class="btn small" id="adminResetTimer">🔁 Réinitialiser le timer</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">🏆 Classement (live)</h3>
+        <table>
+          <thead><tr><th>Pseudo</th><th>Codes</th><th>Score</th><th>Dernière maj</th></tr></thead>
+          <tbody id="board"><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="firebase-init.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
