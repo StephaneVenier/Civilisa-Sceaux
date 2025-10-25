@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aventures — Civilisa’Sceaux</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body data-page="index">
+  <nav class="nav">
+    <div class="row">
+      <div class="brand"><div class="logo"><div>🏛️</div></div> Civilisa'Sceaux</div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <a href="../index.html">Accueil</a>
+        <a href="../catalogue.html">Catalogue</a>
+        <a href="index.html" class="active">Aventures</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <header>
+      <div class="brand">🦂 Civilisa’Sceaux — <span style="color:var(--accent)">Aventure Égyptienne</span></div>
+      <div class="pill">Maître du jeu : <strong>Stefanubis</strong></div>
+    </header>
+
+    <div class="card">
+      <h1>📜 Aventures</h1>
+      <p class="muted">Version QR-only : scanne les codes (1 pt chacun) avant vendredi 16:00.</p>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h2>🏺 Aventure Égyptienne</h2>
+            <div class="timer" id="timer">Calcul du compte à rebours…</div>
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+              <a class="btn" id="btnStart">Lancer / Continuer</a>
+              <a class="btn ghost small" id="btnIntro">Changer/Entrer mon pseudo</a>
+            </div>
+            <div style="margin-top:16px" class="notice">
+              <strong>Infos :</strong> pseudo stocké en local (même appareil). 10 QR, 1 point chacun.
+            </div>
+            <div class="card" style="margin-top:12px">
+              <strong>Admin (Stephane)</strong>
+              <p class="muted">Réinitialiser le <em>timer</em> jusqu’au prochain vendredi 16:00.</p>
+              <button class="btn small" id="adminResetTimer">🔁 Réinitialiser le timer</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h3>🏆 Classement (live)</h3>
+            <table>
+              <thead><tr><th>Pseudo</th><th>Codes</th><th>Score</th><th>Dernière maj</th></tr></thead>
+              <tbody id="board"><tr><td colspan="4" class="muted">Chargement…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="firebase-init.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

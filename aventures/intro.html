@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrer mon pseudo — Aventure</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body data-page="intro">
+  <nav class="nav">
+    <div class="row">
+      <div class="brand"><div class="logo"><div>🏛️</div></div> Civilisa'Sceaux</div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <a href="../index.html">Accueil</a>
+        <a href="../catalogue.html">Catalogue</a>
+        <a href="index.html" class="active">Aventures</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="card">
+      <h2>🎭 Choisis ton pseudo/prénom</h2>
+      <div class="row">
+        <div class="col">
+          <label for="pseudo">Pseudo / Prénom</label>
+          <input type="text" id="pseudo" placeholder="Ex. Léa, Léo, Chloé…" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px">
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="btnSave">Enregistrer & commencer</button>
+            <button class="btn ghost" id="btnBack">Retour</button>
+          </div>
+        </div>
+        <div class="col">
+          <div class="notice"><strong>Astuce :</strong> tu peux réutiliser le même pseudo plus tard pour reprendre ta progression (même appareil).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="firebase-init.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
