@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aventures — Civilisa'Sceaux</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="aventures.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body data-page="intro">
+
+  <nav class="nav">
+    <div class="row">
+      <div class="brand"><div class="logo"><div>🏛️</div></div> Civilisa'Sceaux</div>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <a href="../index.html">Accueil</a>
+        <a href="../catalogue.html">Catalogue</a>
+        <a class="active" href="index.html">Aventures</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="card">
+      <h2 style="margin:0">🎭 Ton pseudo / prénom</h2>
+      <p class="muted" style="margin:.35rem 0 1rem">Il s’affichera dans le classement public.</p>
+      <input class="input" id="pseudo" placeholder="Ex. Léa, Léo, Chloé…">
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn primary" id="btnSave">Enregistrer & commencer</button>
+        <button class="btn ghost" id="btnBack">Retour</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="firebase-init.js"></script>
+  
+  <script type="module" src="app.js"></script>
+</body>
+</html>
