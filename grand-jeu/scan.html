@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Civilisa’Sceaux — Scan</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --border:#334155;
+      --muted:#94a3b8;
+      --text:#e2e8f0;
+      --blue:#2563eb;
+      --darkbtn:#1f2937;
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+    }
+    body{
+      margin:0;
+      padding:24px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .card{
+      max-width:760px;
+      margin:0 auto;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:20px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(31,41,55,.7);
+      font-size:14px;
+      color:var(--text);
+    }
+    h1{ margin:14px 0 8px; font-size:26px; }
+    .muted{ color:var(--muted); line-height:1.4; }
+    .btnrow{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+    a.btn{
+      display:inline-block;
+      padding:12px 14px;
+      border-radius:12px;
+      text-decoration:none;
+      color:#fff;
+      background:var(--blue);
+      font-weight:600;
+    }
+    a.btn.secondary{
+      background:var(--darkbtn);
+      border:1px solid var(--border);
+      font-weight:600;
+    }
+    .box{
+      margin-top:14px;
+      padding:14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(31,41,55,.55);
+    }
+    .small{ font-size:13px; }
+    code{
+      background:rgba(148,163,184,.12);
+      border:1px solid rgba(148,163,184,.25);
+      padding:2px 6px;
+      border-radius:8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="pill" id="status">Chargement…</div>
+
+    <h1>Fragment débloqué</h1>
+    <p class="muted" id="msg"></p>
+
+    <div class="box">
+      <div class="muted small" id="progress"></div>
+      <div class="muted small" id="hint"></div>
+    </div>
+
+    <div class="btnrow">
+      <a class="btn" href="./finale.html">Voir la carte finale</a>
+      <a class="btn secondary" href="./index.html">Retour au Grand Jeu</a>
+    </div>
+
+    <p class="muted small" style="margin-top:14px">
+      Astuce : ce QR doit ressembler à <code>scan.html?id=4</code> (avec un id de 1 à 11).
+    </p>
+  </div>
+
+  <script>
+    // ===== Réglages =====
+    const TOTAL = 11;
+    const STORAGE_KEY = "civilisa_grand_jeu_scans_v1";
+
+    // ===== Utils =====
+    function loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { scanned: [] };
+      } catch (e) {
+        return { scanned: [] };
+      }
+    }
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+    function markScanned(id) {
+      const state = loadState();
+      if (!state.scanned.includes(id)) state.scanned.push(id);
+      state.scanned.sort((a,b)=>a-b);
+      saveState(state);
+      return state;
+    }
+
+    // ===== Lecture du paramètre ?id= =====
+    const params = new URLSearchParams(window.location.search);
+    const id = Number(params.get("id"));
+
+    const statusEl = document.getElementById("status");
+    const msgEl = document.getElementById("msg");
+    const progressEl = document.getElementById("progress");
+    const hintEl = document.getElementById("hint");
+
+    if (!Number.isInteger(id) || id < 1 || id > TOTAL) {
+      statusEl.textContent = "QR invalide ❌";
+      statusEl.style.borderColor = "rgba(239,68,68,.6)";
+      msgEl.textContent = "Ce QR code n’est pas reconnu. Vérifie que le lien contient bien ?id=1 à ?id=11.";
+      const state = loadState();
+      progressEl.textContent = `Progression sur ce téléphone : ${state.scanned.length}/${TOTAL}`;
+      hintEl.textContent = state.scanned.length ? `Déjà validés : ${state.scanned.join(", ")}` : "Aucun stand validé pour le moment.";
+    } else {
+      const state = markScanned(id);
+      const count = state.scanned.length;
+
+      statusEl.textContent = `Fragment ${id}/${TOTAL} enregistré ✅`;
+      statusEl.style.borderColor = "rgba(34,197,94,.6)";
+
+      msgEl.textContent = "Ton passage sur ce stand a bien été pris en compte.";
+      progressEl.textContent = `Progression sur ce téléphone : ${count}/${TOTAL}`;
+
+      if (count < TOTAL) {
+        hintEl.textContent = `Stands validés : ${state.scanned.join(", ")} — encore ${TOTAL - count} à scanner.`;
+      } else {
+        hintEl.textContent = "🎉 11/11 ! La carte finale est maintenant débloquée.";
+      }
+    }
+  </script>
+</body>
+</html>
