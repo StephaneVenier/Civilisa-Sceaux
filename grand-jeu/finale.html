@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Civilisa’Sceaux — Carte finale</title>
+  <style>
+    :root{
+      --bg:#0f172a; --card:#111827; --border:#334155; --muted:#94a3b8; --text:#e2e8f0;
+      --blue:#2563eb; --darkbtn:#1f2937; --ok:#22c55e; --warn:#f59e0b;
+    }
+    body{margin:0;padding:24px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);}
+    .card{max-width:980px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;}
+    h1{margin:0 0 10px;font-size:28px;}
+    .muted{color:var(--muted);line-height:1.45;}
+    .locked{margin-top:12px;padding:14px;border-radius:12px;border:1px solid var(--border);background:rgba(31,41,55,.55);}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(31,41,55,.7);font-size:14px;}
+    .btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}
+    a.btn{display:inline-block;padding:12px 14px;border-radius:12px;text-decoration:none;color:#fff;background:var(--blue);font-weight:700;}
+    a.btn.secondary{background:var(--darkbtn);border:1px solid var(--border);font-weight:700;}
+    img{max-width:100%;border-radius:14px;border:1px solid var(--border);margin-top:12px;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="pill" id="status">Chargement…</div>
+    <h1>Carte des Civilisations</h1>
+
+    <!-- Bloc verrouillé -->
+    <div id="locked" class="locked" style="display:none">
+      <strong>🔒 Carte verrouillée</strong>
+      <p class="muted" id="lockmsg" style="margin:8px 0 0"></p>
+
+      <div class="btnrow">
+        <a class="btn" href="./index.html">Retour au Grand Jeu</a>
+        <a class="btn secondary" href="./scan.html?id=1">Scanner un QR (test)</a>
+      </div>
+    </div>
+
+    <!-- Bloc débloqué -->
+    <div id="unlocked" style="display:none">
+      <p class="muted">🎉 Félicitations ! Tu as validé les 11 stands. Voici la carte complète.</p>
+
+      <!-- Mets ton image complète ici -->
+      <img src="./assets/carte.jpg" alt="Carte des Civilisations (mosaïque)" />
+
+      <div class="btnrow">
+        <a class="btn" href="./index.html">Retour au Grand Jeu</a>
+        <a class="btn secondary" href="#" id="reset">Réinitialiser (test)</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL = 11;
+    const STORAGE_KEY = "civilisa_grand_jeu_scans_v1";
+
+    function loadState() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { scanned: [] }; }
+      catch { return { scanned: [] }; }
+    }
+    function resetGame() { localStorage.removeItem(STORAGE_KEY); }
+
+    const statusEl = document.getElementById("status");
+    const lockedEl = document.getElementById("locked");
+    const unlockedEl = document.getElementById("unlocked");
+    const lockMsgEl = document.getElementById("lockmsg");
+
+    const state = loadState();
+    const count = state.scanned.length;
+
+    if (count >= TOTAL) {
+      statusEl.textContent = "✅ Débloquée";
+      statusEl.style.borderColor = "rgba(34,197,94,.6)";
+      unlockedEl.style.display = "block";
+    } else {
+      statusEl.textContent = "🔒 Verrouillée";
+      statusEl.style.borderColor = "rgba(245,158,11,.6)";
+      lockedEl.style.display = "block";
+      lockMsgEl.textContent = `Progression : ${count}/${TOTAL}. Scanne encore ${TOTAL - count} QR code(s) pour révéler la carte.`;
+    }
+
+    const resetBtn = document.getElementById("reset");
+    if (resetBtn) {
+      resetBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        resetGame();
+        location.reload();
+      });
+    }
+  </script>
+</body>
+</html>
