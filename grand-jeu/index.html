@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Civilisa’Sceaux — Grand Jeu du Musée</title>
+  <style>
+    :root{
+      --bg:#0f172a; --card:#111827; --border:#334155; --muted:#94a3b8; --text:#e2e8f0;
+      --blue:#2563eb; --darkbtn:#1f2937; --ok:#22c55e;
+    }
+    body{margin:0;padding:24px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);}
+    .card{max-width:820px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;}
+    h1{margin:0 0 10px;font-size:28px;}
+    .muted{color:var(--muted);line-height:1.45;}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(31,41,55,.7);font-size:14px;}
+    .box{margin-top:14px;padding:14px;border-radius:12px;border:1px solid var(--border);background:rgba(31,41,55,.55);}
+    .btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}
+    a.btn{display:inline-block;padding:12px 14px;border-radius:12px;text-decoration:none;color:#fff;background:var(--blue);font-weight:700;}
+    a.btn.secondary{background:var(--darkbtn);border:1px solid var(--border);font-weight:700;}
+    .small{font-size:13px;}
+    code{background:rgba(148,163,184,.12);border:1px solid rgba(148,163,184,.25);padding:2px 6px;border-radius:8px;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="pill" id="status">Chargement…</div>
+    <h1>Grand Jeu du Musée</h1>
+
+    <p class="muted">
+      Scanne les QR codes des <strong>11 stands</strong> pour débloquer la
+      <strong>Carte des Civilisations</strong> (peinture / mosaïque).
+      <br />
+      <span class="small">La progression est enregistrée sur <strong>ce téléphone</strong>.</span>
+    </p>
+
+    <div class="box">
+      <div class="muted" id="progress">Progression : …</div>
+      <div class="muted small" id="list"></div>
+    </div>
+
+    <div class="btnrow">
+      <a class="btn" href="./finale.html">Voir la carte finale</a>
+      <a class="btn secondary" href="#" id="reset">Réinitialiser (test)</a>
+    </div>
+
+    <p class="muted small" style="margin-top:14px">
+      Pour tester rapidement, tu peux ouvrir :
+      <code>scan.html?id=1</code>, puis <code>scan.html?id=2</code>… jusqu’à 11.
+    </p>
+  </div>
+
+  <script>
+    const TOTAL = 11;
+    const STORAGE_KEY = "civilisa_grand_jeu_scans_v1";
+
+    function loadState() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { scanned: [] }; }
+      catch { return { scanned: [] }; }
+    }
+    function resetGame() { localStorage.removeItem(STORAGE_KEY); }
+
+    const statusEl = document.getElementById("status");
+    const progressEl = document.getElementById("progress");
+    const listEl = document.getElementById("list");
+
+    const state = loadState();
+    const count = state.scanned.length;
+
+    progressEl.textContent = `Progression : ${count}/${TOTAL}`;
+    listEl.textContent = count ? `Stands validés : ${state.scanned.join(", ")}` : "Aucun stand validé pour le moment.";
+
+    if (count >= TOTAL) {
+      statusEl.textContent = "✅ Jeu terminé — Carte débloquée";
+      statusEl.style.borderColor = "rgba(34,197,94,.6)";
+    } else {
+      statusEl.textContent = "🔎 En cours — Scanne les QR des stands";
+    }
+
+    document.getElementById("reset").addEventListener("click", (e) => {
+      e.preventDefault();
+      resetGame();
+      location.reload();
+    });
+  </script>
+</body>
+</html>
